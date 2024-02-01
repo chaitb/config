@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@react-native-community/cli": "^11.3.6",
+    "create-next-app": "^13.5.4",
+    "create-sst": "^2.29.2",
+    "expo-cli": "^6.3.10",
+    "netlify-cli": "^15.9.1",
+    "react-native-cli": "^2.0.1"
+  }
+}
