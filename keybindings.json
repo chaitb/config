@@ -1,0 +1,124 @@
+// Place your key bindings in this file to override the defaults
+[
+  {
+    "key": "space e",
+    // show current file in explorer
+    "command": "revealInExplorer",
+    "when": "(editorTextFocus && vim.active && vim.mode != 'Insert') || filesExplorerFocus"
+  },
+  {
+    "key": "a",
+    // show current file in explorer
+    "command": "explorer.newFile",
+    "when": "filesExplorerFocus && !inputFocus"
+  },
+  {
+    "key": "shift+A",
+    // show current file in explorer
+    "command": "explorer.newFolder",
+    "when": "filesExplorerFocus && !inputFocus"
+  },
+  {
+    "key": "space w",
+    // save file
+    "command": "workbench.action.files.save",
+    "when": "(editorTextFocus && vim.active && vim.mode != 'Insert') || filesExplorerFocus"
+  },
+  {
+    "key": "space q",
+    "command": "workbench.action.closeActiveEditor",
+    "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+  },
+  {
+    "key": "space l",
+    "command": "workbench.action.togglePanel",
+    "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+  },
+  {
+    "key": "space f",
+    "command": "workbench.action.showAllEditorsByMostRecentlyUsed",
+    "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+  },
+  {
+    "key": "space s",
+    "command": "workbench.action.quickTextSearch",
+    "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+  },
+  {
+    "key": "shift+l",
+    "command": "workbench.action.nextEditorInGroup",
+    "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+  },
+  {
+    "key": "shift+h",
+    "command": "workbench.action.previousEditorInGroup",
+    "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+  },
+  {
+    "key": "ctrl+h",
+    "command": "workbench.action.navigateLeft",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+l",
+    "command": "workbench.action.navigateRight",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "alt+shift+j",
+    "command": "editor.action.moveLinesDownAction",
+    "when": "editorTextFocus && vim.active"
+  },
+  {
+    "key": "alt+shift+k",
+    "command": "editor.action.moveLinesUpAction",
+    "when": "editorTextFocus && vim.active"
+  },
+  {
+    "key": "space j",
+    "command": "editor.action.goToDeclaration",
+    "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+  },
+  {
+    "key": "up",
+    "command": "editor.gotoPreviousFold",
+    "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+  },
+  {
+    "key": "down",
+    "command": "editor.gotoNextFold",
+    "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+  },
+  {
+    "key": "space k",
+    // goto definition in split editor
+    "command": "editor.action.openDeclarationToTheSide",
+    "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+  },
+  {
+    "key": "space l",
+    // goto previous edit location
+    "command": "workbench.action.navigatePreviousInEditLocations",
+    "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+  },
+  {
+    "key": "space space",
+    // goto previous location in navigation history
+    "command": "workbench.action.navigateBackInNavigationLocations",
+    "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
+  },
+  {
+    "key": "cmd+p",
+    "command": "-workbench.action.quickOpenNavigateNextInFilePicker",
+    "when": "inFilesPicker && inQuickOpen"
+  },
+  {
+    "key": "cmd+p",
+    "command": "workbench.action.quickOpen",
+    "when": "vim.mode != 'Insert'"
+  },
+  {
+    "key": "cmd+n",
+    "command": "fileutils.newFile"
+  }
+]
