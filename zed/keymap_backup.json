@@ -1,0 +1,48 @@
+[
+  {
+    "context": "Editor && vim_mode == normal && (vim_operator == none || vim_operator == n) && !VimWaiting",
+    "bindings": {
+      // put key-bindings here if you want them to work only in normal mode
+      "space j": "editor::GoToDefinition",
+      "space r": "editor::FindAllReferences",
+      "[ d": "editor::GoToPrevDiagnostic",
+      "] d": "editor::GoToDiagnostic"
+    }
+  },
+  {
+    "context": "Editor && VimControl && !VimWaiting && !menu",
+    "bindings": {
+      // put key-bindings here if you want them to work in normal & visual mode
+      "H": "pane::ActivatePrevItem",
+      "L": "pane::ActivateNextItem",
+      "ctrl-l": "workspace::ActivateNextPane", // next slit editor
+      "ctrl-h": "workspace::ActivatePreviousPane", // previous split editor, // next split editor
+      "space f": [
+        "task::Spawn",
+        { "task_name": "find_in_files", "reveal_target": "center" }
+      ],
+      "cmd-p": [
+        "task::Spawn",
+        { "task_name": "file_finder", "reveal_target": "center" }
+      ]
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+    "bindings": {
+      // put key-bindings here if you want them to work only in normal mode
+    }
+  },
+  {
+    "context": "Editor && vim_mode == visual && !VimWaiting && !menu",
+    "bindings": {
+      // visual, visual line & visual block modes
+    }
+  },
+  {
+    "context": "Editor && vim_mode == insert && !menu",
+    "bindings": {
+      // put key-bindings here if you want them to work in insert mode
+    }
+  }
+]

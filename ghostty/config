@@ -1,0 +1,29 @@
+# Decoration
+
+theme = dark:GruvboxDarkHard,light:rose-pine-dawn
+window-theme = auto
+title = "" 
+
+font-family = "FiraCode Nerd Font Mono Ret"
+font-thicken
+font-size = 18
+adjust-cell-height = "20%"
+window-padding-x = 10
+window-padding-y = 10,0
+cursor-style = block
+cursor-style-blink = true
+shell-integration-features = no-cursor
+
+# Navigation
+
+macos-titlebar-style = hidden
+quick-terminal-position = center
+quick-terminal-animation-duration = 0
+
+
+# Keybindings
+
+keybind = global:opt+`=toggle_quick_terminal
+keybind = ctrl+s>w>n=new_window
+keybind = ctrl+s>w>d=toggle_window_decorations
+keybind = ctrl+s>w>f=toggle_fullscreen
