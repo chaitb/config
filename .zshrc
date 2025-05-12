@@ -5,11 +5,18 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# Add deno completions to search path
+if [[ ":$FPATH:" != *":/Users/chaitanyabhagwat/.zsh/completions:"* ]]; then export FPATH="/Users/chaitanyabhagwat/.zsh/completions:$FPATH"; fi
+
 # If you come from bash you might have to change your $PATH.
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:"$HOME/.local/bin"
+export PATH=$PATH:"/opt/homebrew/bin"
+export EDITOR=vi
+# export VISUAL=cursor
+
 HELIX_RUNTIME=/home/user-name/src/helix/runtime
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -20,7 +27,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="powerlevel10k/powerlevel10k"
+ZSH_THEME="simple" # set by `omz`
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -82,10 +89,10 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=( 
+plugins=(
     git
     zsh-autosuggestions
-) 
+)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -110,38 +117,46 @@ source $ZSH/oh-my-zsh.sh
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
-#
+
 # Example aliases
-alias v="lvim ."
-alias vi="lvim"
+alias v="nvim ."
+alias vi="nvim"
 alias zshconfig="vi ~/.zshrc"
 alias watchdog="~/watchdog.sh"
+alias pnpn="pnpm"
 
+
+# source $ZSH_CUSTOM/aliases.zsh
 # Other functions
-ssh() {
-  # Check if the first argument starts with '-i' (identity file flag).
-  if [[ "$1" == "-i" ]]; then
-    # If an identity file is specified, skip the first two arguments ("-i key.pem").
-    local session_name="$3"
-  else
-    local session_name="$1"
-  fi
-
-  # Set the tmux window name to the provided session_name.
-  tmux rename-window "$session_name"
-
-  # Execute the SSH command with all the provided arguments.
-  command ssh "$@"
+gs() {
+  git branch -a --format='%(refname:short)' |
+  fzf --ansi --query="main" --preview 'git log -n 10 --pretty=format:"%C(auto)%h - %s" $(echo {} | sed "s#^origin/##")' --preview-window=right:60%:wrap |
+  sed "s#^origin/##" |
+  xargs -r git switch
 }
+# ssh() {
+#   # Check if the first argument starts with '-i' (identity file flag).
+#   if [[ "$1" == "-i" ]]; then
+#     # If an identity file is specified, skip the first two arguments ("-i key.pem").
+#     local session_name="$3"
+#   else
+#     local session_name="$1"
+#   fi
+
+#   # Set the tmux window name to the provided session_name.
+#   tmux rename-window "$session_name"
+
+#   # Execute the SSH command with all the provided arguments.
+#   command ssh "$@"
+# }
 
 t() {
-  tree -L 2
+  tree -L 3
 }
 
 f() {
   vi $(fzf)
 }
-
 
 
 export NVM_DIR="$HOME/.nvm"
@@ -152,11 +167,12 @@ export NVM_DIR="$HOME/.nvm"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-eval "$(pyenv init -)"
-eval "$(rbenv init -)"
+
+# Install notion completion
 eval "$(notion completion --install)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source <(fzf --zsh)
 export FZF_DEFAULT_COMMAND='fd --type file'
 
 # bun completions
@@ -171,3 +187,93 @@ autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /opt/homebrew/bin/terraform terraform
 # eval "$(notion-meeting install_completion)"
 eval "$(direnv hook zsh)"
+eval "$(pyenv init -)"
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+#compdef gt
+###-begin-gt-completions-###
+#
+# yargs command completion script
+#
+# Installation: gt completion >> ~/.zshrc
+#    or gt completion >> ~/.zprofile on OSX.
+#
+_gt_yargs_completions()
+{
+  local reply
+  local si=$IFS
+  IFS=$'
+' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" gt --get-yargs-completions "${words[@]}"))
+  IFS=$si
+  _describe 'values' reply
+}
+compdef _gt_yargs_completions gt
+###-end-gt-completions-###
+
+# Yazi wrapper
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
+
+# Interactive search with fzf and rg
+# Usage: `ff` or `ff <folder>`.
+
+function ff() {
+    [[ -n $1 ]] && cd $1 # go to provided folder or noop
+    RG_DEFAULT_COMMAND="rg -i -l --hidden --no-ignore-vcs"
+
+    selected=$(
+    FZF_DEFAULT_COMMAND="rg --files" fzf \
+      -m \
+      -e \
+      --ansi \
+      --disabled \
+      --reverse \
+      --bind "ctrl-a:select-all" \
+      --bind "f12:execute-silent:(subl -b {})" \
+      --bind "change:reload:$RG_DEFAULT_COMMAND {q} || true" \
+      --preview "rg -i --pretty --context 2 {q} {}" | cut -d":" -f1,2
+    )
+
+    [[ -n $selected ]] && subl $selected # open multiple files in editor
+}
+
+fstash() {
+  local out q k sha
+  while out=$(
+    git stash list --pretty="%C(yellow)%h %>(14)%Cgreen%cr %C(blue)%gs" |
+    fzf --ansi --no-sort --query="$q" --print-query \
+        --expect=ctrl-d,ctrl-b);
+  do
+    IFS=$'\n'; set -f
+    lines=($(<<< "$out"))
+    unset IFS; set +f
+    q="${lines[0]}"
+    k="${lines[1]}"
+    sha="${lines[-1]}"
+    sha="${sha%% *}"
+    [[ -z "$sha" ]] && continue
+    if [[ "$k" == 'ctrl-d' ]]; then
+      git diff $sha
+    elif [[ "$k" == 'ctrl-b' ]]; then
+      git stash branch "stash-$sha" $sha
+      break;
+    else
+      git -c color.ui=always stash show -p $sha | less -+F
+    fi
+  done
+}
+
+
+. "/Users/chaitanyabhagwat/.deno/env"
+# Initialize zsh completions (added by deno install script)
+autoload -Uz compinit
+compinit
+
+# The Fuck (autocorrect errors in terminal commands)
+eval $(thefuck --alias)
